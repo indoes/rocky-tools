@@ -53,6 +53,19 @@ if (( EUID != 0 )); then
     exit 1
 fi
 
+# Fix CentOS-Linux-*.repos to vault
+while true; do
+read -p "Do you want fix CentOS-Linux-*.repo files to vault.centos.org? (y/n) " yn
+case $yn in
+        [yY] ) printf '\033[0;31m'"\tChanging baseurl /etc/yum.repos.d/CentOS-Linux-*.repo files to vault.centos.org\n"'\033[0m\n';
+                sed 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*;
+                sed 's|baseurl=mirrors.*.com|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*;
+                  break;;
+        [nN] ) printf '\033[0;31m'"\tLeaving /etc/yum.repos.d/CentOS-Linux-*.repo files untouched!!!\n"'\033[0m\n';
+                  break;;
+        * ) echo invalid response;;
+esac
+done
 
 # Path to logfile
 logfile=/var/log/migrate2rocky.log
